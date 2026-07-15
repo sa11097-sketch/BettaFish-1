@@ -1,0 +1,57 @@
+name: Financial Sentiment Tracker
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天北京时间早上 8:00 定时自动运行
+  workflow_dispatch:      # 允许手动在 GitHub 网页上点击触发
+
+permissions:
+  contents: write         # 必须赋予写权限，以便 Action 能把每天的“记忆文件”存回仓库
+
+jobs:
+  run-tracker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install Dependencies
+      run: |
+        # 仅安装 Google 专属大模型 SDK 及 HTML 渲染所需的轻量化基础库
+        pip install google-genai jinja2 pydantic requests
+
+    - name: Run Gemini Financial Sentiment Agent
+      env:
+        # 你需要在仓库的 Settings -> Secrets and variables -> Actions 中配置 GEMINI_API_KEY
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # 推荐使用免费且速度极快的模型：gemini-2.5-flash
+        GEMINI_MODEL_NAME: ${{ secrets.GEMINI_MODEL_NAME }}
+        # 这里可以随意修改为你最想追踪的金融板块
+        TRACK_TOPIC: "科创板半导体及次新股情绪发酵" 
+      run: |
+        python financial_run.py
+
+    - name: Commit and Push History Update
+      run: |
+        # 将今天模型生成的简要记忆追加到 history_summary.json，并自动 commit 提交
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add history_summary.json
+        # 如果文件没有发生变动，则跳过提交，防止 Action 报错中断
+        git diff-index --quiet HEAD || git commit -m "chore: 自动更新舆情历史时间记忆库 [skip ci]"
+        git push origin main
+
+    - name: Upload Report Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Gemini-Financial-Report
+        path: final_reports/
