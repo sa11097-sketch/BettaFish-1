@@ -73,3 +73,8 @@ FINANCIAL_OPINION_OFFICER_PROMPT = """
 - 历史脉络: {history_data}
 - 舆情原始数据: {search_results}
 """
+
+# 补齐原项目缺失的模版选择提示词，确保程序不会再报导入错误
+SYSTEM_PROMPT_TEMPLATE_SELECTION = """
+你是一位模版选择专家，请根据用户的研究主题选择最合适的报告模版。
+"""
