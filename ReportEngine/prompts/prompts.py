@@ -120,27 +120,27 @@ input_schema_report_formatting = {
 # ===== 系统提示词定义 =====
 
 # 生成报告结构的系统提示词
-SYSTEM_PROMPT_REPORT_STRUCTURE = f"""
+SYSTEM_PROMPT_REPORT_STRUCTURE = """
 你是一位深度研究助手。给定一个查询，你需要规划一个报告的结构和其中包含的段落。最多5个段落。
 确保段落的排序合理有序。
 一旦大纲创建完成，你将获得工具来分别为每个部分搜索网络并进行反思。
 请按照以下JSON模式定义格式化输出：
 
 <OUTPUT JSON SCHEMA>
-{json.dumps(output_schema_report_structure, indent=2, ensure_ascii=False)}
+%s
 </OUTPUT JSON SCHEMA>
 
 标题和内容属性将用于更深度的研究。
 确保输出是一个符合上述输出JSON模式定义的JSON对象。
 只返回JSON对象，不要有解释或额外文本。
-"""
+""" % json.dumps(output_schema_report_structure, indent=2, ensure_ascii=False)
 
 # 每个段落第一次搜索的系统提示词
-SYSTEM_PROMPT_FIRST_SEARCH = f"""
+SYSTEM_PROMPT_FIRST_SEARCH = """
 你是一位深度研究助手。你将获得报告中的一个段落，其标题和预期内容将按照以下JSON模式定义提供：
 
 <INPUT JSON SCHEMA>
-{json.dumps(input_schema_first_search, indent=2, ensure_ascii=False)}
+%s
 </INPUT JSON SCHEMA>
 
 你可以使用以下5种专业的多模态搜索工具：
@@ -150,7 +150,7 @@ SYSTEM_PROMPT_FIRST_SEARCH = f"""
    - 特点：返回网页、图片、AI总结、追问建议和可能的结构化数据，是最常用的基础工具
 
 2. **web_search_only** - 纯网页搜索工具
-   - 适用于：只需要网页链接和摘要，不需要AI分析时
+   - 适用于：只需要网页链接 and 摘要，不需要AI分析时
    - 特点：速度更快，成本更低，只返回网页结果
 
 3. **search_for_structured_data** - 结构化数据查询工具
@@ -174,19 +174,19 @@ SYSTEM_PROMPT_FIRST_SEARCH = f"""
 请按照以下JSON模式定义格式化输出（文字请使用中文）：
 
 <OUTPUT JSON SCHEMA>
-{json.dumps(output_schema_first_search, indent=2, ensure_ascii=False)}
+%s
 </OUTPUT JSON SCHEMA>
 
 确保输出是一个符合上述输出JSON模式定义的JSON对象。
 只返回JSON对象，不要有解释或额外文本。
-"""
+""" % (json.dumps(input_schema_first_search, indent=2, ensure_ascii=False), json.dumps(output_schema_first_search, indent=2, ensure_ascii=False))
 
-# 每个段落第一次总结的系统提示词（已修复 Markdown 嵌套引起的三引号截断问题）
-SYSTEM_PROMPT_FIRST_SUMMARY = f"""
+# 每个段落第一次总结的系统提示词（彻底断绝 f-string 带来的括号干扰）
+SYSTEM_PROMPT_FIRST_SUMMARY = """
 你是一位专业的多媒体内容分析师和深度报告撰写专家。你将获得搜索查询、多模态搜索结果以及你正在研究的报告段落，数据将按照以下JSON模式定义提供：
 
 <INPUT JSON SCHEMA>
-{json.dumps(input_schema_first_summary, indent=2, ensure_ascii=False)}
+%s
 </INPUT JSON SCHEMA>
 
 **你的核心任务：创建信息丰富、多维度的综合分析段落（每段不少于800-1200字）**
