@@ -130,7 +130,7 @@ SYSTEM_PROMPT_REPORT_STRUCTURE = f"""
 {json.dumps(output_schema_report_structure, indent=2, ensure_ascii=False)}
 </OUTPUT JSON SCHEMA>
 
-标题和内容属性将用于更深入的研究。
+标题和内容属性将用于更深度的研究。
 确保输出是一个符合上述输出JSON模式定义的JSON对象。
 只返回JSON对象，不要有解释或额外文本。
 """
@@ -181,7 +181,7 @@ SYSTEM_PROMPT_FIRST_SEARCH = f"""
 只返回JSON对象，不要有解释或额外文本。
 """
 
-# 每个段落第一次总结的系统提示词
+# 每个段落第一次总结的系统提示词（已修复 Markdown 嵌套引起的三引号截断问题）
 SYSTEM_PROMPT_FIRST_SUMMARY = f"""
 你是一位专业的多媒体内容分析师和深度报告撰写专家。你将获得搜索查询、多模态搜索结果以及你正在研究的报告段落，数据将按照以下JSON模式定义提供：
 
@@ -204,3 +204,18 @@ SYSTEM_PROMPT_FIRST_SUMMARY = f"""
    - **结构化数据应用**：充分利用天气、股票、百科等结构化信息（如适用）
 
 3. **内容结构化组织**：
+   ```text
+   ## 综合信息概览
+   [多种信息源的核心发现]
+   
+   ## 文本内容深度分析
+   [网页、文章内容的详细分析]
+   
+   ## 视觉信息解读
+   [图片、多媒体内容的分析]
+   
+   ## 数据综合分析
+   [各类数据的整合分析]
+   
+   ## 多维度洞察
+   [基于多种信息源的深度洞察]
