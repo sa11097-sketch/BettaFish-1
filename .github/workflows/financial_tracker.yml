@@ -26,8 +26,9 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        # 仅安装 Google 专属大模型 SDK 及 HTML 渲染所需的轻量化基础库
-        pip install google-genai jinja2 pydantic pydantic-settings requests loguru openai
+        # 饱和式安装：安装所有原项目深度学习、绘图及报告生成所需依赖
+        pip install google-genai jinja2 pydantic pydantic-settings requests loguru openai \
+        matplotlib scipy weasyprint
 
     - name: Run Gemini Financial Sentiment Agent
       env:
